@@ -1,0 +1,173 @@
+{% extends 'base/base.html' %}
+{% load static %} 
+
+{% block content %}
+
+<!-- Start Banner Area -->
+<section class="banner-area organic-breadcrumb">
+  <div class="container">
+    <div
+      class="breadcrumb-banner d-flex flex-wrap align-items-center justify-content-end"
+    >
+      <div class="col-first">
+        <h1>Shopping Cart</h1>
+        <nav class="d-flex align-items-center">
+          <a href="{% url 'home-page' %}">Home<span class="lnr lnr-arrow-right"></span></a>
+          <a href="category.html">Cart</a>
+        </nav>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- End Banner Area -->
+
+<!--================Cart Area =================-->
+<section class="cart_area">
+  <div class="container">
+    <div class="cart_inner">
+      <div class="table-responsive">
+        <table class="table">
+          <thead>
+            <tr>
+              <th scope="col">Product</th>
+              <th scope="col">Size</th>
+              <th scope="col">Price</th>
+              <th scope="col">Quantity</th>
+              <th scope="col">Total</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% if cart %}
+            
+            
+            {% endif %}
+            {% for item in items %}
+            <tr>
+              <td>
+                <div class="media">
+                  <div class="d-flex">
+                    <img
+                      src="{{item.product.product_images.first.imageURL}}"
+                      alt=""
+                      style="height: 13rem; width: 13rem; object-fit: cover"
+                    />
+                  </div>
+                  <div class="media-body">
+                    <p>{{ item.product.product_name }}</p>
+                  </div>
+                </div>
+              </td>
+              <td>
+                <h5>{{ item.size_varient }}</h5>
+              </td>
+              <td>
+                <h5>₹{{ item.getProductPrice }}</h5>
+              </td>
+              <td>
+                <div class="product_count">
+                  <input
+                    type="text"
+                    name="qty"
+                    id="sst"
+                    maxlength="12"
+                    value="{{ item.quantity }}"
+                    title="Quantity:"
+                    class="input-text qty"
+                  />
+                  <form action="" method="POST">
+                    {% csrf_token %}
+                    <input hidden type="text" name="productid" value="{{item.product.uid}}" >
+                    <input hidden type="text" name="color" value="{{item.color_varient}}" >
+                    <input hidden type="text" name="size" value="{{item.size_varient}}" >
+                    <input hidden type="text" name="add" value="True" >
+                    <button
+                      type="Submit"
+                      class="increase items-count"
+                    
+                    >
+                      <i class="lnr lnr-chevron-up"></i>
+                    </button>
+
+                  </form>
+                 
+                  <form action="" method="POST">
+                    {% csrf_token %}
+                    <input hidden type="text" name="productid" value="{{item.product.uid}}" >
+                    <input hidden type="text" name="color" value="{{item.color_varient}}" >
+                    <input hidden type="text" name="size" value="{{item.size_varient}}" >
+                    <input hidden type="text" name="sub" value="True" >
+                    <button
+                      type="Submit"
+                      class="reduced items-count"
+                     
+                    >
+                     <i class="lnr lnr-chevron-down"></i>
+                    </button>
+
+                  </form>
+                  
+                  </button>
+                </div>
+              </td>
+              <td>
+                <h5>₹{{ item.getTotal }}</h5>
+              </td>
+            </tr>
+
+            {% endfor %}
+
+            <tr class="bottom_button">
+              <td></td>
+              <td></td>
+              <td>
+                <form method="POST">
+                  {% csrf_token %}
+                  <div class="cupon_text d-flex align-items-center">
+                    {% if order.coupon %}
+                    <input type="text" name="coupon" placeholder="{{order.coupon.coupon_code}}" />
+                    {% else %}
+                    <input type="text" name="coupon" placeholder="Coupon Code" />
+                    {% endif %}
+
+                    
+                    <button type="Submit" class="primary-btn" >Apply</button>
+                    {% if order.uid %}
+                    <a class="gray_btn" href="{% url "remove_coupon" order.uid %}" >Remove</a>
+                    {% else %}
+                    <a class="gray_btn" href="" >Remove</a>
+                    {% endif %}
+                  </div>
+                </form>
+              </td>
+            </tr>
+            <tr>
+              <td></td>
+              <td></td>
+              <td>
+                <h5>Subtotal</h5>
+              </td>
+              <td>
+                <h5>₹{{ order.getCartTotal }}</h5>
+              </td>
+            </tr>
+            
+            <tr class="out_button_area">
+              <td></td>
+              <td></td>
+              <td></td>
+              <td>
+                <div class="checkout_btn_inner d-flex align-items-center">
+                  <a class="gray_btn" href="{% url 'products-page' %}">Continue Shopping</a>
+                  <a class="primary-btn" href="{% url 'checkout-page' %}">Proceed to checkout</a>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+<!--================End Cart Area =================-->
+
+{% endblock content %}

@@ -1,0 +1,122 @@
+{% load static %} 
+
+<!-- Start Header Area -->
+<header class="header_area sticky-header">
+  <div class="main_menu">
+    <nav class="navbar navbar-expand-lg navbar-light main_box">
+      <div class="container">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <a class="navbar-brand logo_h" href="{% url 'home-page' %}"
+          ><img src="{% static 'img/logo.png' %}" alt=""
+        /></a>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-toggle="collapse"
+          data-target="#navbarSupportedContent"
+          aria-controls="navbarSupportedContent"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div
+          class="collapse navbar-collapse offset"
+          id="navbarSupportedContent"
+        >
+          <ul class="nav navbar-nav menu_nav ml-auto">
+            <li class="nav-item active">
+              <a class="nav-link" href="{% url 'home-page' %}">Home</a>
+            </li>
+            <li class="nav-item submenu dropdown">
+              <a
+                href="#"
+                class="nav-link dropdown-toggle"
+                data-toggle="dropdown"
+                role="button"
+                aria-haspopup="true"
+                aria-expanded="false"
+                >Shop</a
+              >
+              <ul class="dropdown-menu">
+                <li class="nav-item">
+                  <a class="nav-link" href="{% url 'products-page' %}?page=1"
+                    >Shop Category</a
+                  >
+                </li>
+              
+              </ul>
+            </li>
+            
+            <li class="nav-item submenu dropdown">
+              <a
+                href="#"
+                class="nav-link dropdown-toggle"
+                data-toggle="dropdown"
+                role="button"
+                aria-haspopup="true"
+                aria-expanded="false"
+                >Account</a
+              >
+              <ul class="dropdown-menu">
+                {% if request.user.is_authenticated %}
+                <li class="nav-item">
+                  <a class="nav-link" href="{% url 'logout-page' %}">Logout</a>
+                </li>
+
+                {% else %}
+                <li class="nav-item">
+                  <a class="nav-link" href="{% url 'login-page' %}">Login</a>
+                </li>
+
+                {% endif %}
+                <li class="nav-item">
+                  <a class="nav-link" href="{% url 'wishlist-page' %}">Wishlist</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="{% url 'settings-page' %}">Settings</a>
+                </li>
+              </ul>
+            </li>
+            
+          </ul>
+          <ul class="nav navbar-nav navbar-right">
+            <li class="nav-item">
+              
+            </li>
+            <li class="nav-item"><a href="{% url 'cart-page' %}" class="cart"><span class="ti-bag"></span></a> <p class="badge badge-warning" id="lblCartCount">{{cartItems}}</p></li>
+            <li class="nav-item">
+              <button class="search"><span class="lnr lnr-magnifier" id="search"></span></button>
+            </li>
+          </ul>
+          
+        </div>
+      </div>
+    </nav>
+  </div>
+  <div class="search_input" id="search_input_box" >
+    <div class="container">
+      <form class="d-flex justify-content-between" action="{% url 'products-page' %}" method="GET">
+        <input
+          type="text"
+          class="form-control"
+          id="search_input"
+          placeholder="Search Here"
+          value="{{search_query}}" 
+          name="search_query"
+        />
+        <input type="hidden" value="search_input" name="search_input"/>
+        <button type="submit" class="btn"></button>
+        <span
+          class="lnr lnr-cross"
+          id="close_search"
+          title="Close Search"
+        ></span>
+      </form>
+    </div>
+  </div>
+</header>
+<!-- End Header Area -->

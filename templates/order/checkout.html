@@ -1,0 +1,223 @@
+{% extends 'base/base.html' %} 
+{% load static %} 
+{% block content %}
+
+<!-- Start Banner Area -->
+<section class="banner-area organic-breadcrumb">
+  <div class="container">
+    <div
+      class="breadcrumb-banner d-flex flex-wrap align-items-center justify-content-end"
+    >
+      <div class="col-first">
+        <h1>Checkout</h1>
+        <nav class="d-flex align-items-center">
+          <a href="{% url 'home-page' %}"
+            >Home<span class="lnr lnr-arrow-right"></span
+          ></a>
+          <a href="single-product.html">Checkout</a>
+        </nav>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- End Banner Area -->
+
+<!--================Checkout Area =================-->
+<section class="checkout_area section_gap">
+  <div class="container">
+    {% if not request.user.is_authenticated %}
+    <div class="returning_customer">
+      <div class="check_title">
+        <h2>Returning Customer? <a href="#">Click here to login</a></h2>
+      </div>
+      <p>
+        If you have shopped with us before, please enter your details in the
+        boxes below. If you are a new customer, please proceed to the Billing &
+        Shipping section.
+      </p>
+      <form
+        class="row contact_form"
+        action="#"
+        method="post"
+        novalidate="novalidate"
+      >
+        <div class="col-md-6 form-group p_star">
+          <input type="text" class="form-control" id="name" name="name" />
+          <span class="placeholder" data-placeholder="Username or Email"></span>
+        </div>
+        <div class="col-md-6 form-group p_star">
+          <input
+            type="password"
+            class="form-control"
+            id="password"
+            name="password"
+          />
+          <span class="placeholder" data-placeholder="Password"></span>
+        </div>
+        <div class="col-md-12 form-group">
+          <button type="submit" value="submit" class="primary-btn">
+            login
+          </button>
+          <div class="creat_account">
+            <input type="checkbox" id="f-option" name="selector" />
+            <label for="f-option">Remember me</label>
+          </div>
+          <a class="lost_pass" href="#">Lost your password?</a>
+        </div>
+      </form>
+    </div>
+    <br />
+    {% else %}
+    <div class="billing_details">
+      <div class="row">
+        <div class="col-lg-8">
+          <h3>Billing Details</h3>
+          <form
+            class="row contact_form"
+            action="#"
+            method="POST"
+            novalidate="novalidate"
+          >
+            {% csrf_token %} 
+            {% for field in form %}
+              <div class="col-md-6 form-group p_star">
+                {{field}}
+                <span class="placeholder"></span>
+              </div>
+
+              {% for error in field.errors %}
+              <p style="color: red">{{ error }}</p>
+              {% endfor %} 
+              
+            {% endfor %}
+            <div class="col-md-12 form-group">
+              <div class="creat_account">
+                <button type="Submit" name="save_address" class="primary-btn">
+                  Submit your details
+                </button>
+              </div>
+            </div>
+          </form>
+          <form method="POST">
+            {% csrf_token %}
+            {% for address in addresses %}
+                
+                <div class="section-top-border col-md-12">
+                  <div class="row">
+                    <div class="col-lg-12" style="color: #000000">
+                      
+                        <blockquote
+                          class="generic-blockquote"
+                          style="font-size: 1rem"
+                        >
+                          
+                          <div class="switch-wrap d-flex justify-content-between">
+                            <p>Select Address</p>
+                            <div class="primary-checkbox">
+                              <input type="checkbox" id="default-checkbox" name="selected_address" value="{{ address.uid }}" {% if address  %}checked{% endif %}/>
+                              <label for="default-checkbox"></label>
+                            </div>
+                          </div>
+                          {{address.street}} {{address.city}},{{address.district}}
+                          {{address.state}},{{address.country}} {{address.pincode}}
+                          <br />
+                          Phone Number: {{address.phone_number}}
+                          <br />
+                        </blockquote>
+                      
+                    </div>
+                  </div>
+                </div>
+            {% endfor %}
+            <button type="Submit" name="select_address" class="primary-btn m-2" style="border-radius:0px;">
+              Select Address
+            </button>
+          </form>
+         
+        </div>
+        <div class="col-lg-4">
+          <div class="order_box">
+            <h2>Your Order</h2>
+            <ul class="list">
+              <li>
+                <a href="#">Product <span>Total</span></a>
+              </li>
+              {% for item in items %}
+              <li>
+                <a href="#"
+                  >{{item.product.product_name|slice:"8"}}
+                  <span class="middle">x {{item.quantity}}</span>
+                  <span class="last">₹{{ item.getProductPrice }}</span></a
+                >
+              </li>
+              {% endfor %}
+            </ul>
+            <ul class="list list_2">
+              <li>
+                <a href="#">Total <span>₹{{ order.getCartTotal }}</span></a>
+              </li>
+            </ul>
+            <div class="payment_item active">
+              <div class="radion_btn">
+                <input type="radio" id="f-option6" name="selector" />
+                <label for="f-option6">Online </label>
+                <img src="img/product/card.jpg" alt="" />
+                <div class="check"></div>
+              </div>
+              <p>
+                Pay via UPI; you can pay with your debit or credit card if you
+                don’t have UPI
+              </p>
+            </div>
+            <div class="creat_account">
+              <input type="checkbox" id="f-option4" name="selector" />
+              <label for="f-option4">I’ve read and accept the </label>
+              <a href="#">terms & conditions*</a>
+            </div>
+            <button class="primary-btn" id="rzp-button1">Proceed to Pay</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    {% endif %}
+  </div>
+</section>
+<!--================End Checkout Area =================-->
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script>
+  var options = {
+    key: "rzp_test_rKJk6BLvbjx04D", // Enter the Key ID generated from the Dashboard
+    amount: "{{payment.ammount}}", // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
+    currency: "INR",
+    name: "Karma Store",
+    description: "Test Transaction",
+    image: "{% static 'img/logo.png' %}",
+    order_id: "{{payment.id}}", //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
+    handler: function (response) {
+      window.location.href = `http://127.0.0.1:8000/order/success/?razorpay_payment_id=${response.razorpay_payment_id}&razorpay_order_id=${response.razorpay_order_id}&razorpay_signature=${response.razorpay_signature}`;
+      alert(response.razorpay_payment_id);
+      alert(response.razorpay_order_id);
+      alert(response.razorpay_signature);
+    },
+    theme: {
+      color: "#ff6c00",
+    },
+  };
+  var rzp1 = new Razorpay(options);
+  rzp1.on("payment.failed", function (response) {
+    alert(response.error.code);
+    alert(response.error.description);
+    alert(response.error.source);
+    alert(response.error.step);
+    alert(response.error.reason);
+    alert(response.error.metadata.order_id);
+    alert(response.error.metadata.payment_id);
+  });
+  document.getElementById("rzp-button1").onclick = function (e) {
+    rzp1.open();
+    e.preventDefault();
+  };
+</script>
+
+{% endblock content %}

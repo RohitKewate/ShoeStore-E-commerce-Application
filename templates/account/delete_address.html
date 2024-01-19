@@ -1,0 +1,44 @@
+{% extends 'base/base.html' %} 
+{% load static %} 
+
+{% block content %}
+  <!-- Start Banner Area -->
+  <section class="banner-area organic-breadcrumb">
+    <div class="container">
+      <div class="breadcrumb-banner d-flex flex-wrap align-items-center justify-content-end">
+        <div class="col-first">
+          <h1>Delete Address</h1>
+          <nav class="d-flex align-items-center">
+            <a href="{% url 'address-page' %}">Address<span class="lnr lnr-arrow-right"></span></a>
+            <a href="{{request.path_info}}">Delete Address</a>
+          </nav>
+        </div>
+      </div>
+    </div>
+</section>
+<!-- End Banner Area -->
+
+
+<section class="login_box_area section_gap">
+    
+    <div class="container generic-blockquote">
+        <div class="">
+            <form class="row login_form" method="POST" id="contactForm" novalidate="novalidate">
+                {% csrf_token %}
+               
+                    <h3>Are you sure you want to remove this address.</h3>
+
+                
+                
+
+                <div class="col-md-12 form-group">
+                  <button type="submit" value="submit" class="primary-btn">Remove Address</button>
+                </div>
+              </form>
+        </div>
+    
+    
+    </div>
+</section>
+
+{% endblock content %}

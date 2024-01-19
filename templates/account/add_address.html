@@ -1,0 +1,55 @@
+{% extends 'base/base.html' %} 
+{% load static %} 
+
+{% block content %}
+  <!-- Start Banner Area -->
+  <section class="banner-area organic-breadcrumb">
+    <div class="container">
+      <div class="breadcrumb-banner d-flex flex-wrap align-items-center justify-content-end">
+        <div class="col-first">
+          <h1>Add Address</h1>
+          <nav class="d-flex align-items-center">
+            <a href="{% url 'address-page' %}">Address<span class="lnr lnr-arrow-right"></span></a>
+            <a href="{{request.path_info}}">Add Address</a>
+          </nav>
+        </div>
+      </div>
+    </div>
+</section>
+<!-- End Banner Area -->
+
+
+<section class="login_box_area section_gap">
+    
+    <div class="container generic-blockquote">
+        <div class="">
+            <form class="row login_form" method="POST" id="contactForm" novalidate="novalidate">
+                {% csrf_token %}
+                {% for field in form %}
+                <div class="col-md-12 form-group ">
+          
+                  <label>{{field.label}}</label>
+                  
+                  {{ field }}
+              
+    
+                  {% for error in field.errors  %}
+                  <p style="color: red;">{{ error }}</p>
+                  {% endfor %}
+                  
+                 
+                </div>
+                {% endfor %}
+                
+               
+                <div class="col-md-12 form-group">
+                  <button type="submit" value="submit" class="primary-btn">Save Changes</button>
+                </div>
+              </form>
+        </div>
+    
+    
+    </div>
+</section>
+
+{% endblock content %}

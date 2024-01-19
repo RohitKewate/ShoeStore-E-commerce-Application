@@ -1,0 +1,512 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block content %}
+<style>
+  .rate {
+    float: left;
+    padding: 15px 10px;
+  }
+  .rate:not(:checked) > input {
+    position:absolute;
+    top:-9999px;
+  }
+  .rate:not(:checked) > label {
+    float:right;
+    width:1em;
+    overflow:hidden;
+    white-space:nowrap;
+    cursor:pointer;
+    font-size:30px;
+    color:#ccc;
+  }
+  .rate:not(:checked) > label:before {
+    content: '★ ';
+  }
+  .rate > input:checked ~ label {
+    color: #ffc700;    
+  }
+  .rate:not(:checked) > label:hover,
+  .rate:not(:checked) > label:hover ~ label {
+    color: #deb217;  
+  }
+  .rate > input:checked + label:hover,
+  .rate > input:checked + label:hover ~ label,
+  .rate > input:checked ~ label:hover,
+  .rate > input:checked ~ label:hover ~ label,
+  .rate > label:hover ~ input:checked ~ label {
+    color: #c59b08;
+  }
+
+</style>
+
+
+<!-- Start Banner Area -->
+<section class="banner-area organic-breadcrumb">
+  <div class="container">
+    <div class="breadcrumb-banner d-flex flex-wrap align-items-center justify-content-end">
+      <div class="col-first">
+        <h1>Product Details Page</h1>
+        <nav class="d-flex align-items-center">
+          <a href="{% url 'home-page' %}">Home<span class="lnr lnr-arrow-right"></span></a>
+          <a href="#">Shop<span class="lnr lnr-arrow-right"></span></a>
+          <a href="single-product.html">product-details</a>
+        </nav>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- End Banner Area -->
+
+<!--================Single Product Area =================-->
+<div class="product_image_area">
+  <div class="container">
+    <div class="row s_product_inner">
+      <div class="col-lg-6">
+        <div class="s_Product_carousel">
+          {% for image in product.product_images.all %}
+          <div class="single-prd-item">
+            <img class="img-fluid" src="{{image.imageURL}}" alt="">
+          </div>
+          
+          {% endfor %}
+          
+          
+        </div>
+      </div>
+      <div class="col-lg-5 offset-lg-1">
+        <div class="s_product_text">
+          <h4>{{product.brand}}</h4>
+          <h3>{{product.product_name}}</h3>
+          {% if updated_price %}
+          <h2>₹{{updated_price}}</h2>
+          {% else %}
+          <h2>₹{{product.price}}</h2>
+          
+          {% endif %}
+          
+          <ul class="list">
+            <li><a class="active" href="#"><span>Category</span> : {{product.category}}</a></li>
+            <li><a href="#"><span>Availibility</span> : {{product.availability}}</a></li>
+          </ul>
+          <hr>
+          <p>{{product.product_intro}}</p>
+          {% if product.color_variation.count %}
+          <div class="product_color" >
+            <h2>More Colors</h2>
+            <div class="colors">
+              <div class="container">
+	
+              
+                
+                <ul class="d-flex flex-row " id="Myform" >
+                  {% for color in product.color_variation.all %}
+                  <li>
+                    <input type="radio" class="radio m-2" name="color" onchange="get_color('{{color.color_name}}')" style="appearance: none; background-color: {{color.hex_code}}; " {% if selected_color == color.color_name %}checked{% endif %}>
+                    <div class="check"></div>
+                  </li>
+                  {% endfor %}
+          
+          
+               </ul>
+            </div>
+              
+         
+              
+          </div>
+          {% endif %}
+          
+            <div class="product_size" style="margin-bottom: 5rem">
+              <div class="select_size">
+                <h2>Select Size</h2>
+              
+              </div>
+              <form class="size_form" id="Myform" action="#" method="POST">
+                {% csrf_token %}
+
+                <select name="size" class="country_select">
+                  {% for size in product.size_variation.all %}
+                  <option value="{{size.size_name}}" {% if selected_size == size.size_name %}selected style="background-color: #0000"{% endif %}>{{size.size_name}} UK</option>
+                  {% endfor %}
+                  
+                </select>
+                <button class="btn" type="Submit" style="margin-left:1rem">OK</button>
+              </form>
+                
+                
+
+
+              
+              
+              <button type="button" class="trigger">Size Chart &#10095;</button>
+              <div class="modal">
+              <div class="modal-content">
+                  <span class="close-button">&times;</span>
+                  <h1>Hello, I am a modal!</h1>
+              </div>
+              </div>
+              
+                
+            </div>
+            <div class="card_area d-flex align-items-center">
+              {% if selected_color is not none %}
+              <a href="{% url 'add_to_cart' product.uid %}?color={{selected_color}}&size={{selected_size}}" class="primary-btn" type="Submit">Add to Cart</a>
+              <form method="POST" action="{% url 'add_to_wishlist' %}">
+                {% csrf_token %}
+                <input type="hidden" value="{{product.uid}}" name="product_uid"/>
+                <button class="icon_btn" ><i class="lnr lnr lnr-heart"></i></button>
+              </form>
+              
+              {% else %}
+              <p>Please choose a color.</p>
+              
+              {% endif %}
+              
+            </div>
+          
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!--================End Single Product Area =================-->
+
+<!--================Product Description Area =================-->
+<section class="product_description_area">
+  <div class="container">
+    <ul class="nav nav-tabs" id="myTab" role="tablist">
+      <li class="nav-item">
+        <a class="nav-link" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">Description</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile"
+         aria-selected="false">Specification</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" id="contact-tab" data-toggle="tab" href="#contact" role="tab" aria-controls="contact"
+         aria-selected="false">Comments</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link active" id="review-tab" data-toggle="tab" href="#review" role="tab" aria-controls="review"
+         aria-selected="false">Reviews</a>
+      </li>
+    </ul>
+    <div class="tab-content" id="myTabContent">
+      <div class="tab-pane fade" id="home" role="tabpanel" aria-labelledby="home-tab">
+        <p>{{product.product_description}}</p>
+        
+      </div>
+      <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+        <div class="table-responsive">
+          <table class="table">
+            <tbody>
+              <tr>
+                <td>
+                  <h5>Material</h5>
+                </td>
+                <td>
+                  <h5>{{specifications.material}}</h5>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <h5>Ankle Height</h5>
+                </td>
+                <td>
+                  <h5>{{specifications.ankle_height}}</h5>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <h5>Sport</h5>
+                </td>
+                <td>
+                  <h5>{{specifications.sport}}</h5>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <h5>Fastening</h5>
+                </td>
+                <td>
+                  <h5>{{specifications.fastening}}</h5>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <h5>Outsole Type</h5>
+                </td>
+                <td>
+                  <h5>{{specifications.outsole_Type}}</h5>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <h5>Arch Type</h5>
+                </td>
+                <td>
+                  <h5>{{specifications.arch_type}}</h5>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <h5>Running Type</h5>
+                </td>
+                <td>
+                  <h5>{{specifications.running_type}}</h5>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <h5>Surface Type</h5>
+                </td>
+                <td>
+                  <h5>{{specifications.surface_type}}</h5>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">
+        <div class="row">
+          <div class="col-lg-6">
+            <div class="comment_list">
+              {% if comments %}
+              {% for comment in comments %}
+              <div class="review_item">
+                <div class="media">
+                  <div class="d-flex">
+                    <img class="rounded-circle"  style="height:4rem" src="{{comment.owner.profile_image.url}}" alt="">
+                  </div>
+                  <div class="media-body">
+                    <h4>{{comment.owner}}</h4>
+                    <h5>{{comment.created|timesince}}</h5>
+                    
+                  </div>
+                </div>
+                <p>{{comment.content}}</p>
+              </div>
+              <hr>
+              
+              {% endfor %}
+
+              {% else %}
+              <h6>No comments yet, be the first one to Comment.</h6>
+              {% endif %}
+              
+
+             
+            </div>
+          </div>
+          <div class="col-lg-6">
+            <div class="review_box">
+              {% if request.user.is_authenticated %}
+              <h4>Post a comment</h4>
+              <form class="row contact_form" id="Myform" method="POST" id="contactForm" novalidate="novalidate">
+                {% csrf_token %}
+                {% for field in form %}
+                <div class="col-md-12">
+                  <div class="form-group">
+                    {{field}}
+                  </div>
+                </div>
+                
+                {% endfor %}
+                
+               
+                <div class="col-md-12 text-right">
+                  <button type="submit" value="submit" class="btn primary-btn">Submit Now</button>
+                </div>
+              </form>
+              
+              {% else %}
+              <a href="{% url 'login-page' %}?next={{request.path}}">Please login to leave a review</a>
+
+              {% endif %}
+
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="tab-pane fade show active" id="review" role="tabpanel" aria-labelledby="review-tab">
+        <div class="row">
+          <div class="col-lg-6">
+            <div class="row total_rate">
+              <div class="col-6">
+                <div class="box_total">
+                  <h5>Overall</h5>
+                  <h4>{{product.getOverallRating}}</h4>
+                  <h6>({{product.review_set.count}} Review{{ product.rate_count|pluralize:"s" }})</h6>
+                </div>
+              </div>
+              <div class="col-6">
+                <div class="rating_list">
+                  <h3>Based on {{product.review_set.count}} Review{{ product.rate_count|pluralize:"s" }}</h3>
+                  <ul class="list">
+                    <li><a href="#">5 Star <i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i
+                         class="fa fa-star"></i><i class="fa fa-star"></i> </a></li>
+                    <li><a href="#">4 Star <i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i
+                         class="fa fa-star"></i><i class="fa fa-star-o"></i></i> </a></li>
+                    <li><a href="#">3 Star <i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star-o"></i></i><i class="fa fa-star-o"></i> </a></li>
+                    <li><a href="#">2 Star <i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star-o"><i class="fa fa-star-o"></i><i class="fa fa-star-o"></i></i> </a></li>
+                    <li><a href="#">1 Star <i class="fa fa-star"></i><i class="fa fa-star-o"></i><i class="fa fa-star-o"></i><i class="fa fa-star-o"></i><i class="fa fa-star-o"></i> </a></li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <div class="review_list">
+              {% for review in product.review_set.all  %}
+              <div class="review_item">
+                <div class="media">
+                  <div class="d-flex">
+                    <img class="rounded-circle"  style="height:4rem" src="{{review.owner.profile_image.url}}" alt="">
+                  </div>
+                  <div class="media-body">
+                    <h4>{{review.owner}}</h4>
+                    <ul class="list">
+                      
+                      {% for key, value in review.RATE %}
+                      {% if key|add:'0' <= review.value|add:'0' %}
+                          <i class="fa fa-star"></i>
+                      {% else %}
+                          <i class="fa fa-star-o"></i>
+                          {{stars.key}}
+                      {% endif %}
+                     {% endfor %}
+                       
+                    </ul>
+                    
+                          
+                      
+                    
+                    
+                    
+                  </div>
+                </div>
+                <p>{{review.body}}</p>
+              </div>
+              
+              {% endfor %}
+             
+              
+            </div>
+          </div>
+          <div class="col-lg-6">
+            <div class="review_box ">
+              
+              
+              {% if request.user.profile.uid in product.reviewers  %}
+              <h6>You have already submitted your review for this product.</h6>
+              {% elif request.user.is_authenticated %}
+              <h4 >Add a Review</h4>
+
+              <form class="row contact_form" action="#" id="Myform"  method="POST" id="contactForm" >
+                {% csrf_token %}
+                <div class="rate">
+                  <p class = "mr-2">Your Rating</p>
+                  <input type="radio" id="star5" name="rate" value="5" />
+                  <label for="star5" title="5">5 stars</label>
+                  <input type="radio" id="star4" name="rate" value="4" />
+                  <label for="star4" title="4">4 stars</label>
+                  <input type="radio" id="star3" name="rate" value="3" />
+                  <label for="star3" title="3">3 stars</label>
+                  <input type="radio" id="star2" name="rate" value="2" />
+                  <label for="star2" title="2">2 stars</label>
+                  <input type="radio" id="star1" name="rate" value="1" />
+                  <label for="star1" title="1">1 star</label>
+                </div>
+
+                <div class="col-md-12">
+                  <div class="form-group">
+                    <textarea class="form-control" name="review" id="message" rows="1" placeholder="Review" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Review'"></textarea></textarea>
+                  </div>
+                </div>
+                <div class="col-md-12 text-right">
+                  <button type="submit" value="submit" class="primary-btn">Submit Now</button>
+                </div>
+              </form>
+              {% else %}
+              <a href="{% url 'login-page' %}?next={{request.path}}">Please login to leave a review</a>
+              
+              {% endif %}
+              
+         
+             
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<!--================End Product Description Area =================-->
+
+<!-- Start related-product Area -->
+<section class="related-product-area section_gap_bottom">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-lg-6 text-center">
+        <div class="section-title">
+          <h1>Related Products</h1>
+          <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore
+            magna aliqua.</p>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-lg-9">
+        <div class="row">
+          {% for product_related in products %}
+          {% if product_related.category == product.category or product_related.brand == product.brand in product_related %}
+          <div class="col-lg-4 col-md-4 col-sm-6 mb-20">
+            <div class="single-related-product d-flex">
+              <a href="#"><img src="{{product_related.product_images.first.imageURL}}" style="height: 5rem; width: 5rem; object-fit: cover" alt=""></a>
+              <div class="desc">
+                <a href="#" class="title">{{product_related.product_name}}</a>
+                <div class="price">
+                  <h6>₹{{product_related.price}}</h6>
+                  <h6 class="l-through">₹{{product_related.mrp_price}}</h6>
+                </div>
+              </div>
+            </div>
+          </div>
+          {% endif %}
+          {% endfor %}
+          
+         
+        </div>
+      </div>
+      <div class="col-lg-3">
+        <div class="ctg-right">
+          <a href="#" target="_blank">
+            <img class="img-fluid d-block mx-auto" src="img/category/c5.jpg" alt="">
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- End related-product Area -->
+<script>
+
+  function get_color(color) {
+    console.log(color)
+    window.location.href = window.location.pathname + `?color=${color}`
+  }
+  console.log({{updated_price}})
+
+  
+     
+
+  
+
+</script>
+
+
+{% endblock content %}
+
+
+
+
+

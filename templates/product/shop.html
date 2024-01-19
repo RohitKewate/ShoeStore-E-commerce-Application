@@ -1,0 +1,287 @@
+{% extends 'base/base.html' %} 
+{% load static %} 
+{% load custom_filter %}
+
+{% block content %}
+
+<!-- Start Banner Area -->
+<section class="banner-area organic-breadcrumb">
+  <div class="container">
+    <div
+      class="breadcrumb-banner d-flex flex-wrap align-items-center justify-content-end"
+    >
+      <div class="col-first">
+        <h1>Shop Category</h1>
+        <nav class="d-flex align-items-center">
+          <a href="{% url 'home-page' %}"
+            >Home<span class="lnr lnr-arrow-right"></span
+          ></a>
+          <a href="#">Shop</a>
+        </nav>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- End Banner Area -->
+<div class="container">
+  <div class="row">
+    <div class="col-xl-3 col-lg-4 col-md-5">
+      <div class="sidebar-categories">
+        <div class="head">Browse Categories</div>
+        <ul class="main-categories">
+          {% for category in categories %}
+          <li class="main-nav-list">
+            <form method="GET" action="{% url 'products-page' %}?q={{category.category_name|urlencode }}">
+              <a
+              href="{% url 'products-page' %}?q={{category.category_name|urlencode }}" name="q"
+              onchange="get_category('{{category.category_name}}')"
+              ><span class="lnr lnr-arrow-right"></span>{{category.category_name}}<span class="number">({{ category.get_category_product_count }})</span></a>
+
+
+            </form>
+           
+           
+          </li>
+          
+          {% endfor %}
+          
+
+        </ul>
+      </div>
+      <div class="sidebar-filter mt-50">
+        <form method="GET" action="#" name="check_filter">
+          <input type="hidden" value="check_filter" name="check_filter"/>
+        <div class="top-filter-head">Product Filters</div>
+        
+        <div class="common-filter">
+          <div class="head">Brands</div>
+          <ul>
+            {% for brand in brands %}
+            <li class="filter-list">
+              <input
+                class="pixel-radio"
+                type="checkbox"
+                id="apple"
+                style="height:1rem; width:1rem;"
+                name="brand"
+                value = "{{brand.brand_name}}"
+              /><label for="apple">{{brand.brand_name}}<span> ({{ brand.get_brand_product_count }})</span></label>
+            </li>
+            
+            
+            {% endfor %}
+            
+            
+          </ul>
+          
+        </div>
+        <div class="common-filter">
+          <div class="head">Color</div>
+          
+            <ul>
+              {% for color in colors %}
+              <li class="filter-list">
+                <input
+                  class="pixel-radio"
+                  type="checkbox"
+                  id="black"
+                  name="color"
+                  value = "{{color.color_name}}"
+                  style="height:1rem; width:1rem;"
+                /><label for="black">{{color.color_name}}<span> ({{ color_counts|get_item:color.color_name  }})</span></label>
+              </li>
+              
+              {% endfor %}
+             
+             
+            </ul>
+         
+        </div>
+        <div class="common-filter">
+          <div class="head">Size</div>
+          
+            <ul>
+              {% for size in sizes %}
+              <li class="filter-list">
+                <input
+                  class="pixel-radio"
+                  type="checkbox"
+                  id="black"
+                  name="size"
+                  value = "{{size.size_name}}"
+                  style="height:1rem; width:1rem;"
+                /><label for="black">{{size.size_name}}UK <span> ({{ size_counts|get_item:size.size_name  }})</span></label>
+              </li>
+              
+              {% endfor %}
+             
+             
+            </ul>
+          
+        </div>
+        <input value="filter" class="genric-btn primary-border small m-5 " type="submit">
+      </form>
+      </div>
+    </div>
+    <div class="col-xl-9 col-lg-8 col-md-7">
+      <!-- Start Filter Bar -->
+      <div class="filter-bar d-flex flex-wrap align-items-center">
+        <div class="sorting">
+          <form method="GET">
+            <input type="hidden" value="tag" name="tag"/>
+            <select name='tag_value'>
+            
+              <option value="New">New</option>
+              <option value="Trending">Trending</option>
+              <option value="On Sale">On Sale</option>
+            </select>
+            <input type="submit" value="sort" class="genric-btn primary-border small ml-2 "/>
+
+          </form>
+          
+        </div>
+        {% include 'base/pagination.html' with queryset=products custom_range=custom_range %}
+      </div>
+      <!-- End Filter Bar -->
+      <!-- Start Best Seller -->
+      <section class="lattest-product-area pb-40 category-list">
+        <div class="row">
+          {% for product in products %}
+          <!-- single product -->
+          <div class="col-lg-4 col-md-6">
+            <div class="single-product">
+              <div class="tag-img">
+                <span class=" badge badge--{{product.tag}}">
+                  {{product.tag}}
+                </span>
+
+                <img
+                  class="img-fluid"
+                  style="height: 13rem; width: 13rem; object-fit: cover"
+                  src="{{product.product_images.first.imageURL}}"
+                  alt="{{product.product_name}}"
+                />
+              </div>
+
+              <div class="product-details">
+                {% if product.availability == 'Only few Left!' %}
+                <p style="color: #f39539; font-weight: bold">
+                  {{product.availability}}
+                </p>
+
+                {% endif %}
+
+                <h6>{{product.product_name}}</h6>
+                <div class="price">
+                  <h6>₹{{product.price}}</h6>
+                  <h6 class="l-through">₹{{product.mrp_price}}</h6>
+                </div>
+                <div class="prd-bottom d-flex flex-row">
+                  <form id="wishlist-form" method="POST" name="wishlist_form" action="{% url 'add_to_wishlist' %}">
+                  {% csrf_token %}
+                  <input type="hidden" value="{{product.uid}}" name="product_uid"/>
+                  <a type = "submit">
+                    <a href="#" class="social-info" onclick="myWishlist()">
+                      <span class="lnr lnr-heart"></span>
+                      <p class="hover-text">Wishlist</p>
+                    </a>
+
+
+                  </a>
+                    
+
+                  </form>
+                  <a
+                    href="{% url 'product-details-page' product.slug %}"
+                    class="social-info"
+                  >
+                    <span class="lnr lnr-move"></span>
+                    <p class="hover-text">view more</p>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {% endfor %}
+        </div>
+      </section>
+      <!-- End Best Seller -->
+      <!-- Start Filter Bar -->
+      <div class="filter-bar d-flex flex-wrap align-items-center">
+        
+        {% include 'base/pagination.html' with queryset=products custom_range=custom_range %}
+      </div>
+      <!-- End Filter Bar -->
+    </div>
+  </div>
+</div>
+
+<!-- Start related-product Area -->
+<section class="related-product-area section_gap">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-lg-6 text-center">
+        <div class="section-title">
+          <h1>Deals of the Week</h1>
+          <p>
+            Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do
+            eiusmod tempor incididunt ut labore et dolore magna aliqua.
+          </p>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-lg-9">
+        <div class="row">
+          {% for product in products %}
+          {% if product.tag == "On Sale" %}
+          <div class="col-lg-4 col-md-4 col-sm-6 mb-20">
+            
+            <div class="single-related-product d-flex">
+
+              <a href="#"><img src="{{product.product_images.first.imageURL}}" style="height: 5rem; width: 5rem; object-fit: cover" alt=""></a>
+              <div class="desc">
+                <a href="#" class="title">{{product.product_name}}</a>
+                <div class="price" >
+                  <h6>₹{{product.price}}</h6>
+                  
+                  
+                </div>
+                 
+              </div>
+               
+              
+            </div>
+            
+          
+          </div>
+          {% endif %}
+
+          {% endfor %}
+        </div>
+      </div>
+      <div class="col-lg-3">
+        <div class="ctg-right">
+          <a href="#" target="_blank">
+            <img
+              class="img-fluid d-block mx-auto"
+              src="{% static 'img/category/c5.jpg' %}"
+              alt=""
+            />
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- End related-product Area -->
+<script>
+  function myWishlist() {
+      document.getElementById("wishlist-form").submit();
+  }
+</script>
+
+
+
+{% endblock content %}

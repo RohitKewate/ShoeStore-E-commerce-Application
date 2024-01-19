@@ -1,0 +1,126 @@
+{% extends 'base/base.html' %} {% load static %} {% block content %}
+
+<!-- Start Banner Area -->
+<section class="banner-area organic-breadcrumb">
+  <div class="container">
+    <div
+      class="breadcrumb-banner d-flex flex-wrap align-items-center justify-content-end"
+    >
+      <div class="col-first">
+        <h1>Your Account</h1>
+        <h3>Hi, {{request.user.profile}}</h3>
+        <nav class="d-flex align-items-center">
+          <a href="index.html">Home<span class="lnr lnr-arrow-right"></span></a>
+          <a href="category.html">Account</a>
+        </nav>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- End Banner Area -->
+<br />
+
+<section>
+  <div class="container">
+    <div class="row">
+      <div class="col-md-6">
+        <div class="m-5">
+          <div class="section-top-border">
+            <div class="row">
+              <div class="col-lg-12">
+                <a href="{% url 'your-order-page' %}" style="color: #000000">
+                  <blockquote class="generic-blockquote">
+                    <h3 class="mb-30">Your Order</h3>
+                    “Track, return, or buy things again”
+                  </blockquote>
+                </a>
+              </div>
+            </div>
+          </div>
+          <div class="section-top-border ">
+            <div class="row">
+              <div class="col-lg-12">
+                <a href="{% url 'edit-profile-page' %}" style="color: #000000">
+                  <blockquote class="generic-blockquote">
+                    <h3 class="mb-30">Login and Securities</h3>
+                    “Edit profile name and credentials”
+                  </blockquote>
+                </a>
+              </div>
+            </div>
+          </div>
+          <div class="section-top-border ">
+            <div class="row">
+              <div class="col-lg-12">
+                <a href="{% url 'address-page' %}" style="color: #000000">
+                  <blockquote class="generic-blockquote">
+                    <h3 class="mb-30">Your Address</h3>
+                    “Edit Addresses for orders and gifts”
+                  </blockquote>
+                </a>
+              </div>
+            </div>
+          </div>
+          <div class="section-top-border ">
+            <div class="row">
+              <div class="col-lg-12">
+                <a href="{% url 'contact-page' %}" style="color: #000000">
+                  <blockquote class="generic-blockquote">
+                    <h3 class="mb-30">Contact Us</h3>
+                    “Contact Us for more support or enquiry”
+                  </blockquote>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-6 mt-5">
+        <div class="blog_right_sidebar">
+            
+            <aside class="single_sidebar_widget author_widget">
+                <img class="author_img rounded-circle " style="height:5rem" src="{{user.profile_image.url}}" alt="">
+                <h4>{{user.name}}</h4>
+                <h6 style="font-weight:semibold"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M12 0c-4.198 0-8 3.403-8 7.602 0 4.198 3.469 9.21 8 16.398 4.531-7.188 8-12.2 8-16.398 0-4.199-3.801-7.602-8-7.602zm0 11c-1.657 0-3-1.343-3-3s1.343-3 3-3 3 1.343 3 3-1.343 3-3 3z"/></svg> {{user.location}}</h6>
+                <br>
+                <p>{{user.bio}}</p>
+                <div class="br"></div>
+                
+                  {% if user.is_email_verified %}
+                  <blockquote class="generic-blockquote col" >
+                    <div>
+                      <h6 class="mb-30" >Email Varified  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M12 0c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm-1.959 17l-4.5-4.319 1.395-1.435 3.08 2.937 7.021-7.183 1.422 1.409-8.418 8.591z"/></svg></h6>
+                      “Email Varification is important”
+                    </div>
+                    
+                    
+                  </blockquote>
+                  {% else %}
+                  <blockquote class="generic-blockquote col" >
+                    <div>
+                      <h6 class="mb-30" >Please Varify your email  </h6>
+                      “Email Varification is important”
+                    </div>
+                    
+                    
+                  </blockquote>
+
+                  
+                  {% endif %}  
+                  
+                </div>
+
+            </aside>
+      
+        </div>
+      </div>
+      
+  
+    </div>
+  </div>
+
+
+
+</section>
+
+{% endblock content %}

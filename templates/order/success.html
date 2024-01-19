@@ -1,0 +1,122 @@
+{% extends 'base/base.html' %}
+
+{% load static %}
+
+{% block content %}
+
+	<!-- Start Banner Area -->
+	<section class="banner-area organic-breadcrumb">
+		<div class="container">
+			<div class="breadcrumb-banner d-flex flex-wrap align-items-center justify-content-end">
+				<div class="col-first">
+					<h1>Confirmation</h1>
+					<nav class="d-flex align-items-center">
+						<a href="{% url 'home-page' %}">Home<span class="lnr lnr-arrow-right"></span></a>
+						<a href="category.html">Confirmation</a>
+					</nav>
+				</div>
+			</div>
+		</div>
+	</section>
+	<!-- End Banner Area -->
+
+	<!--================Order Details Area =================-->
+	<section class="order_details section_gap">
+		<div class="container">
+			<h3 class="title_confirmation">Thank you. Your order has been received.</h3>
+			<div class="row order_d_inner">
+				<div class="col-lg-4">
+					<div class="details_item">
+						<h4>Order Info</h4>
+						<ul class="list">
+                            
+                            {% for item in items %}
+							<li><a href="#"><span>Order id</span> : {{trade_id}}</a></li>
+                            <li><a href="#"><span>Name</span> : {{item.product.product_name}}</a></li>
+							<li><a href="#"><span>Total</span> : ₹{{ item.getProductPrice }}</a></li>
+                            
+                            {% endfor %}
+							
+							<li><a href="#"><span>Payment method</span> : Online payments</a></li>
+						</ul>
+					</div>
+				</div>
+				<div class="col-lg-4">
+					<div class="details_item">
+						<h4>Billing Address</h4>
+						<ul class="list">
+							<li><a href="#"><span>Street</span> : {{address.street}}</a></li>
+							<li><a href="#"><span>City</span> : {{address.city}}</a></li>
+							<li><a href="#"><span>District</span> : {{address.district}}</a></li>
+                            <li><a href="#"><span>State</span> : {{address.state}}</a></li>
+                            <li><a href="#"><span>Country</span> : {{address.country}}</a></li>
+							<li><a href="#"><span>Postcode </span> : {{address.pincode}}</a></li>
+						</ul>
+					</div>
+				</div>
+				<div class="col-lg-4">
+					<div class="details_item">
+						<h4>Shipping Address</h4>
+						<ul class="list">
+							<li><a href="#"><span>Street</span> : {{address.street}}</a></li>
+							<li><a href="#"><span>City</span> : {{address.city}}</a></li>
+							<li><a href="#"><span>District</span> : {{address.district}}</a></li>
+                            <li><a href="#"><span>State</span> : {{address.state}}</a></li>
+                            <li><a href="#"><span>Country</span> : {{address.country}}</a></li>
+							<li><a href="#"><span>Postcode </span> : {{address.pincode}}</a></li>
+						</ul>
+					</div>
+				</div>
+			</div>
+			<div class="order_details_table">
+				<h2>Order Details</h2>
+				<div class="table-responsive">
+					<table class="table">
+						<thead>
+							<tr>
+								<th scope="col">Product</th>
+								<th scope="col">Quantity</th>
+								<th scope="col">Total</th>
+							</tr>
+						</thead>
+						<tbody>
+                            {% for item in items %}
+
+                            <tr>
+								<td>
+									<p>{{item.product.product_name}}</p>
+								</td>
+								<td>
+									<h5>x {{item.quantity}}</h5>
+								</td>
+								<td>
+									<p>₹{{ item.getProductPrice }}</p>
+								</td>
+							</tr>
+							
+                            
+                            {% endfor %}
+                            <tr>
+								<td>
+									<h4>Total</h4>
+								</td>
+								<td>
+									<h5></h5>
+								</td>
+								<td>
+									<p>₹{{ total_price }}</p>
+								</td>
+							</tr>
+							
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+	</section>
+	<!--================End Order Details Area =================-->
+
+
+{% endblock content %}
+
+

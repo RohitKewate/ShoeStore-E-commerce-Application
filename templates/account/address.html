@@ -1,0 +1,58 @@
+{% extends 'base/base.html' %} {% load static %} {% block content %}
+<!-- Start Banner Area -->
+<section class="banner-area organic-breadcrumb">
+  <div class="container">
+    <div
+      class="breadcrumb-banner d-flex flex-wrap align-items-center justify-content-end"
+    >
+      <div class="col-first">
+        <h1>Your Addresses</h1>
+        <nav class="d-flex align-items-center">
+          <a href="{% url 'settings-page' %}"
+            >Settings<span class="lnr lnr-arrow-right"></span
+          ></a>
+          <a href="category.html">Address</a>
+        </nav>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- End Banner Area -->
+<br />
+<section>
+    <a href="{% url 'add-address-page' %}" class="primary-btn m-3 ml-5" style="align-item: center; color:#fff; border-radius:2px">
+        &plus; Add Address </a>
+  <div class="row mx-5">
+    
+    {% for address in addresses %}
+    <div class="section-top-border col-md-4">
+      <div class="row">
+        <div class="col-lg-12">
+          <a href="/" style="color: #000000">
+            <blockquote class="generic-blockquote" style="font-size: 1rem">
+              {{address.street}} {{address.city}},{{address.district}}
+              {{address.state}},{{address.country}} {{address.pincode}}
+              <br />
+              Phone Number: {{address.phone_number}}
+              <br />
+              <div class="row pt-4">
+                <a href="{% url 'edit-address-page' address.uid %}" class="col-md-6 pt-1" style="color: #38a4ff">
+                  Edit
+                </a>
+
+                <a href="{% url 'remove-address-page' address.uid %}" class="col-md-6 pt-2" style="color: #f44a40">
+                  Remove
+                </a>
+              </div>
+            </blockquote>
+          </a>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+    
+  </div>
+  
+</section>
+
+{% endblock content %}
